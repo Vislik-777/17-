@@ -1,0 +1,98 @@
+using System;
+
+// 1. Создать enum EmploymentStatus
+public enum EmploymentStatus
+{
+    Active,     // Активен
+    OnLeave,    // В отпуске / на больничном
+    Terminated  // Уволен
+}
+
+
+public class Employee
+{
+    public string Name { get; set; }
+    public DateTime? HireDate { get; set; } 
+    public EmploymentStatus Status { get; set; }
+
+    
+    public Employee() { }
+
+    
+    public Employee(string name, DateTime? hireDate, EmploymentStatus status)
+    {
+        Name = name;
+        HireDate = hireDate;
+        Status = status;
+    }
+    public int GetYearsWorked()
+    {
+        if (HireDate.HasValue) 
+        {
+            DateTime today = DateTime.Today;
+            
+            int years = today.Year - HireDate.Value.Year;
+
+            
+            if (HireDate.Value.Date > today.AddYears(-years))
+            {
+                years--;
+            }
+            return years;
+        }
+        else
+        {
+            return -1; 
+        }
+    }
+
+    
+    public override string ToString()
+    {
+        string seniorityString;
+        int yearsWorked = GetYearsWorked();
+
+        if (yearsWorked == -1)
+        {
+            seniorityString = "не указан";
+        }
+        else
+        {
+            seniorityString = $"{yearsWorked} лет";
+        }
+    
+        return $"{Name}, статус: {Status}, стаж: {seniorityString}";
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // Пример вывода:
+        var emp = new Employee
+        {
+            Name = "Пётр",
+            HireDate = new DateTime(2020, 3, 15), // Дата найма: 15 марта 2020
+            Status = EmploymentStatus.Active
+        };
+
+        Console.WriteLine(emp.GetYearsWorked());
+
+        emp.HireDate = null; // Устанавливаем дату найма в null
+
+        Console.WriteLine(emp.GetYearsWorked());
+
+        Console.WriteLine(emp);
+
+        Console.WriteLine("Дополнительные тесты");
+
+        var emp2 = new Employee("Анна", new DateTime(2023, 10, 20), EmploymentStatus.OnLeave);
+        Console.WriteLine(emp2.ToString());
+        Console.WriteLine($"Стаж Анны: {emp2.GetYearsWorked()}");
+
+        var emp3 = new Employee("Иван", null, EmploymentStatus.Terminated);
+        Console.WriteLine(emp3.ToString());
+        Console.WriteLine($"Стаж Ивана: {emp3.GetYearsWorked()}");
+    }
+}
