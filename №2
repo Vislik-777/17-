@@ -1,0 +1,43 @@
+using System;
+
+// Задание 2: Создать class Order с полями int Id и decimal Total
+public class Order
+{
+    // Свойства для Id и Total
+    public int Id { get; set; }
+    public decimal Total { get; set; }
+
+    // Конструктор по умолчанию (необязателен, но может быть полезен)
+    public Order() { }
+
+    // Конструктор для удобной инициализации
+    public Order(int id, decimal total)
+    {
+        Id = id;
+        Total = total;
+    }
+
+    // Переопределение ToString() для удобного вывода всей информации об объекте
+    public override string ToString()
+    {
+        return $"Order ID: {Id}, Total: {Total:C}"; // :C форматирует как валюту
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // Пример вывода из задания:
+        var order1 = new Order { Id = 1001, Total = 1500.50m };
+
+        var order2 = order1;
+        order2.Total = 2000.00m;
+        Console.WriteLine($"order1.Total: {order1.Total}"); // Вывод: 2000.00
+        Console.WriteLine($"order2.Total: {order2.Total}"); // Вывод: 2000.00
+
+        Console.WriteLine("Полная информация об объектах:");
+        Console.WriteLine($"Order 1: {order1}"); // Order ID: 1001, Total: 2000.00
+        Console.WriteLine($"Order 2: {order2}"); // Order ID: 1001, Total: 2000.00
+    }
+}
