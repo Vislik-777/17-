@@ -1,0 +1,45 @@
+using System;
+
+public struct Weather
+{
+    public string City { get; set; }
+    public double? Temperature { get; set; } // Nullable double: может хранить значение double или быть null
+    public Weather(string city, double? temperature)
+    {
+        City = city;
+        Temperature = temperature;
+    }
+
+    // Добавить: ToString() — если Temperature == null → "Нет данных"
+    public override string ToString()
+    {
+        if (Temperature == null) // Проверяем, равно ли Temperature null
+        {
+            return $"{City}: Нет данных";
+        }
+        else
+        {
+            return $"{City}: {Temperature.Value}°C";
+        }
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // Пример вывода:
+        var w1 = new Weather { City = "Москва", Temperature = 22.5 };
+        var w2 = new Weather { City = "Сочи", Temperature = null }; // Температура не указана (null)
+
+        // Console.WriteLine(w1); // // Москва: 22.5°C
+        Console.WriteLine(w1);
+
+        // Console.WriteLine(w2); // // Сочи: Нет данных
+        Console.WriteLine(w2);
+        Console.WriteLine($"w2.Temperature ?? -999: {w2.Temperature ?? -999}");
+
+        // Дополнительная демонстрация ?? для случая, когда Temperature имеет значение
+        Console.WriteLine($"w1.Temperature ?? -999: {w1.Temperature ?? -999}"); // Выведет 22.5, т.к. w1.Temperature не null
+    }
+}
