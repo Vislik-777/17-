@@ -1,0 +1,76 @@
+using System;
+
+// Создать [Flags] enum FileAccess
+[Flags]
+public enum FileAccess // Указываем, что это перечисление флагов
+{
+    // Значения должны быть степенями двойки для использования в битовых операциях
+    None = 0,      // 0000
+    Read = 1,      // 0001
+    Write = 2,     // 0010
+    Execute = 4    // 0100
+    // Можно добавить и другие, например:
+    // FullAccess = Read | Write | Execute // 0111
+}
+
+// Создать struct File с полем FileAccess Permissions
+public struct File
+{
+    public FileAccess Permissions { get; set; }
+
+    // Конструктор для удобной инициализации (необязателен для struct, но хорошая практика)
+    public File(FileAccess permissions)
+    {
+        Permissions = permissions;
+    }
+
+    // Добавить метод: bool CanRead()
+    public bool CanRead()
+    {
+        // Используем побитовую операцию И (&) для проверки наличия флага
+        // Если результат операции равен самому флагу, значит, флаг установлен.
+        return (Permissions & FileAccess.Read) == FileAccess.Read;
+    }
+
+    // Добавить метод: bool CanWrite()
+    public bool CanWrite()
+    {
+        return (Permissions & FileAccess.Write) == FileAccess.Write;
+    }
+
+    // Можно добавить и другие методы, например, для CanExecute()
+    public bool CanExecute()
+    {
+        return (Permissions & FileAccess.Execute) == FileAccess.Execute;
+    }
+
+    public override string ToString()
+    {
+        return $"File Permissions: {Permissions}";
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        var f = new File { Permissions = FileAccess.Read | FileAccess.Write };
+
+        Console.WriteLine($"CanRead(): {f.CanRead()}");   // Ожидаемый вывод: True
+        Console.WriteLine($"CanWrite(): {f.CanWrite()}");  // Ожидаемый вывод: True
+        Console.WriteLine($"CanExecute(): {f.CanExecute()}"); // Ожидаемый вывод: False (потому что мы не устанавливали FileAccess.Execute)
+
+        Console.WriteLine("\n--- Дополнительные проверки ---");
+
+        var readOnlyFile = new File(FileAccess.Read);
+        Console.WriteLine($"Read-only file. CanRead: {readOnlyFile.CanRead()}, CanWrite: {readOnlyFile.CanWrite()}"); // True, False
+
+        var fullAccessFile = new File(FileAccess.Read | FileAccess.Write | FileAccess.Execute);
+        Console.WriteLine($"Full access file. CanRead: {fullAccessFile.CanRead()}, CanWrite: {fullAccessFile.CanWrite()}, CanExecute: {fullAccessFile.CanExecute()}"); // True, True, True
+
+        var noAccessFile = new File(FileAccess.None);
+        Console.WriteLine($"No access file. CanRead: {noAccessFile.CanRead()}, CanWrite: {noAccessFile.CanWrite()}"); // False, False
+        Console.WriteLine($"\nFile f: {f}"); // Выведет: File Permissions: Read, Write
+        Console.WriteLine($"Full access file: {fullAccessFile}"); // Выведет: File Permissions: Read, Write, Execute
+    }
+}
